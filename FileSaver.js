@@ -14,14 +14,29 @@
 
 var saveAs = saveAs || (function(view) {
 	"use strict";
+
+			var doc;
+
 	// IE <10 is explicitly unsupported
-	if (typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
+	if (typeof navigator !== "undefined" && /MSIE [1-8]\./.test(navigator.userAgent)) {
+		return;
+	} else if (typeof navigator !== "undefined" && /MSIE [9]\./.test(navigator.userAgent)) {
+		// IE 9 will try to use execCommand to save the file
+		var w = window.open();
+		doc = w.document;
+
+		doc.open( mimetype,'replace');
+		doc.charset = "utf-8";
+		doc.write(data);
+		doc.close();
+		doc.execCommand("SaveAs", null, filename)
+
 		return;
 	}
-	var
-		  doc = view.document
+
+			doc = view.document
 		  // only get URL when necessary in case Blob.js hasn't overridden it yet
-		, get_URL = function() {
+		var get_URL = function() {
 			return view.URL || view.webkitURL || view;
 		}
 		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
