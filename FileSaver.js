@@ -22,16 +22,16 @@ var saveAs = saveAs || (function(view) {
 		return;
 	} else if (typeof navigator !== "undefined" && /MSIE [9]\./.test(navigator.userAgent)) {
 		// IE 9 will try to use execCommand to save the file
-		var w = window.open();
-		doc = w.document;
+		return function (data, filename) {
+      var w = window.open();
+      doc = w.document;
 
-		doc.open( mimetype,'replace');
-		doc.charset = "utf-8";
-		doc.write(data);
-		doc.close();
-		doc.execCommand("SaveAs", null, filename)
-
-		return;
+      doc.open(mimetype, 'replace');
+      doc.charset = "utf-8";
+      doc.write(data);
+      doc.close();
+      doc.execCommand("SaveAs", null, filename);
+    };
 	}
 
 			doc = view.document
